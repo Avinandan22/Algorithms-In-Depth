@@ -95,8 +95,7 @@ void mergesort(struct Node ** org,int len)
 int main()
 {
 
-	int N = 3;
-	//N denotes number of organizations
+	int N = 100000;
 	struct database data[N];
 	for(int i = 0;i < N;i++)
 	{
@@ -108,13 +107,14 @@ int main()
 		((data[i])).implist = org;
 		((data[i])).count = 0;
 	}
-	//len denotes number of total entries
-	int len = 6,orgidx,sh,sm,fh,fm;
+	int orgidx,sh,sm,fh,fm,max = 0; // max denotes the maximum index of organisation
 	float val;
 	//taking and storing data
-	for(int i = 0;i < len;i++)
+	while((scanf("%d",&orgidx)) == 1)
 	{
-		scanf("%d %d:%d-%d:%d %f",&orgidx,&sh,&sm,&fh,&fm,&val);
+		if(orgidx > max)
+			max = orgidx;
+		scanf("%d:%d-%d:%d %f",&sh,&sm,&fh,&fm,&val);
 		struct Node * new;
 		new = (struct Node *)malloc(sizeof(struct Node));
 		if(data[orgidx - 1].count == 0)
@@ -129,20 +129,25 @@ int main()
 		*(data[orgidx - 1].lastnode) = new;
 		data[orgidx - 1].count = data[orgidx - 1].count + 1;
 	}
+
 	//sorting and printing data
 	struct Node ** counter;
 	counter = (struct Node **)malloc(sizeof (struct Node*));
-	for(int j = 0;j < N;j++)
+	for(int j = 0;j < max;j++)
 	{
-		printf("%d ",j + 1);
-		mergesort(data[j].implist,data[j].count);
-		*counter = *(data[j].implist); 
-		for(int i = 0;i < data[j].count;i++)
+		//if condition to ignore printing data of organisations having no meetings
+		if(data[j].count)
 		{
-			printf("%.3f ",(*counter)->imp);
-			*counter = (*counter)->next;
+			printf("%d ",j + 1);
+			mergesort(data[j].implist,data[j].count);
+			*counter = *(data[j].implist); 
+			for(int i = 0;i < data[j].count;i++)
+			{
+				printf("%.3f ",(*counter)->imp);
+				*counter = (*counter)->next;
+			}
+			printf("\n");
 		}
-		printf("\n");
 	}
 	return 0;
 }
